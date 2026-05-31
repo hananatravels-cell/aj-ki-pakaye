@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آج کیا پکائیں؟ - Aj Ki Pakaye</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#ff9800">
+
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1830/1830839.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1830/1830839.png">
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        :root { --primary: #ff9800; --secondary: #e65100; --bg: #fff5e6; --text: #5d4037; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; justify-content: center; align-content: center; height: 100vh; text-align: center; }
+        .app-container { width: 100%; max-width: 400px; background: white; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; position: relative; }
+        .lang-container { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #607d8b, #455a64); padding: 4px 10px; border-radius: 20px; }
+        .lang-label { color: white; font-size: 11px; font-weight: bold; }
+        .lang-select { background: transparent; color: white; border: none; font-size: 12px; font-weight: bold; outline: none; cursor: pointer; }
+        .lang-select option { color: #333; background: white; }
+        .app-logo { width: 75px; height: 75px; margin: 25px auto 5px auto; display: block; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        h1 { color: var(--text); font-size: 26px; margin: 5px 0; font-weight: 800; }
+        p.subtitle { color: #7f8c8d; font-size: 13px; margin-top: 0; font-style: italic; }
+        .main-select { width: 85%; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 12px; border: 2px solid var(--primary); margin: 15px auto; display: block; outline: none; color: var(--text); }
+        .result-box { background: linear-gradient(135deg, #fffde7, #fff8e1); border: 3px dashed #ffb300; padding: 20px; border-radius: 18px; margin: 15px auto; width: 85%; box-sizing: border-box; }
+        .result-box h3 { margin: 0; background: linear-gradient(to left, #e65100, #ff5722); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 15px; font-weight: 800; }
+        #dish-display { color: #d32f2f; font-size: 24px; font-weight: 900; margin-top: 12px; }
+        #tip-display { font-size: 13px; color: #6d4c41; margin-top: 10px; font-weight: 600; background-color: #efebe9; padding: 4px 10px; border-radius: 20px; display: inline-block; }
+        .suggest-btn { background: linear-gradient(135deg, #ff9800, #ff5722); color: white; border: none; padding: 15px 30px; font-size: 18px; font-weight: bold; border-radius: 30px; cursor: pointer; width: 85%; margin: 5px auto; box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3); }
+        .affiliate-link { display: inline-block; margin-top: 10px; color: #ff5722; font-size: 12px; font-weight: bold; text-decoration: none; border-bottom: 1px dashed #ff5722; }
+        .credit-footer { font-size: 12px; color: #a1887f; margin-top: 10px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="lang-container">
+        <span class="lang-label">Language:</span>
+        <select class="lang-select" id="lang-selector" onchange="changeLanguage(this.value)">
+            <option value="ur">اردو</option>
+            <option value="en">English</option>
+            <option value="ar">العربية</option>
+        </select>
+    </div>
+
+    <div>
+        <img class="app-logo" src="https://cdn-icons-png.flaticon.com/512/1830/1830839.png" alt="App Logo">
+        <h1 id="app-title">آج کیا پکائیں؟</h1>
+        <p id="app-subtitle" class="subtitle">روز روز کی ٹینشن ختم!</p>
+        
+        <select id="category-select" class="main-select">
+            <option value="all" id="opt-all">🎲 کچھ بھی (150+ مکس)</option>
+            <option value="veg" id="opt-veg">🥦 دالیں اور سبزیاں</option>
+            <option value="meat" id="opt-meat">🍗 چکن، بیف اور مٹن</option>
+            <option value="fast" id="opt-fast">🍔 فاسٹ فوڈ اور چائنیز</option>
+            <option value="breakfast" id="opt-breakfast">🍳 خاص ناشتہ</option>
+            <option value="sweet" id="opt-sweet">🍮 میٹھا (Desserts)</option>
+        </select>
+    </div>
+
+    <div>
+        <div class="result-box" id="res-box">
+            <h3 id="result-title">✨ آج کی سپیشل تجویز ✨</h3>
+            <div id="dish-display">بٹن پر کلک کریں...</div>
+            <div id="tip-display" style="display: none;">ٹپ یہاں آئے گی</div>
+        </div>
+        <a href="https://your-affiliate-link.com" target="_blank" class="affiliate-link" id="aff-link">🍳 کچن کے بہترین ٹولز پر ڈسکاؤنٹ دیکھیں 🍳</a>
+    </div>
+
+    <div>
+        <button class="suggest-btn" id="btn-text" onclick="suggestFood()">تجویز کریں (Suggest Me)</button>
+        <div class="credit-footer">Created by Hanana ✨</div>
+    </div>
+</div>
+
+<script>
+    let currentLang = "ur";
+    const uiStrings = {
+        ur: { title: "آج کیا پکائیں؟", sub: "روز روز کی ٹینشن ختم!", all: "🎲 کچھ بھی (150+ مکس)", veg: "🥦 دالیں اور سبزیاں", meat: "🍗 چکن، بیف اور مٹن", fast: "🍔 فاسٹ فوڈ اور چائنیز", breakfast: "🍳 خاص ناشتہ", sweet: "🍮 میٹھا (Desserts)", resTitle: "✨ آج کی سپیشل تجویز ✨", clickBtn: "بٹن پر کلک کریں...", btn: "تجویز کریں (Suggest Me)", aff: "🍳 کچن کے بہترین ٹولز پر ڈسکاؤنٹ دیکھیں 🍳", dir: "rtl" },
+        en: { title: "What to Cook Today?", sub: "End the daily confusion instantly!", all: "🎲 Anything (150+ Mix)", veg: "🥦 Lentils & Veggies", meat: "🍗 Chicken, Beef & Mutton", fast: "🍔 Fast Food & Chinese", breakfast: "🍳 Special Breakfast", sweet: "🍮 Desserts & Sweets", resTitle: "✨ Today's Special Suggestion ✨", clickBtn: "Click the button...", btn: "Suggest Me A Dish!", aff: "🍳 Get Discounts on Top Kitchen Tools 🍳", dir: "ltr" },
+        ar: { title: "ماذا نطبخ اليوم؟", sub: "تخلص من حيرة كل يوم فوراً!", all: "🎲 أي شيء (150+ مشكل)", veg: "🥦 البقوليات والخضروات", meat: "🍗 الدجاج واللحوم", fast: "🍔 الوجبات السريعة والصينية", breakfast: "🍳 فطور خاص", sweet: "🍮 الحلويات", resTitle: "✨ اقتراح اليوم الخاص ✨", clickBtn: "انقر على الزر...", btn: "اقترح لي وجبة!", aff: "🍳 احصل على خصومات على أدوات المطبخ 🍳", dir: "rtl" }
+    };
+
+    const menuItems = {
+        veg: {
+            ur: ["دال چنا فرائی", "آلو گوبھی", "بھنڈی مسالہ", "مکس سبزی", "دال ماش تڑکا", "پالک پنیر", "سرشوں کا ساگ اور مکئی کی روٹی", "آلو مٹر گاجر", "کڑھی پکوڑا", "مونگ مسور کی دال چاول"],
+            en: ["Daal Chana Fry", "Aloo Gobi", "Bhindi Masala", "Mix Sabzi", "Daal Mash Tadka", "Palak Paneer", "Sarson Ka Saag & Makki Roti", "Aloo Matar Gajar", "Kadhi Pakora", "Mong Masoor Daal Chawal"],
+            ar: ["عدس مقلي", "بطاطس وقرنبيط", "بامية مسالا", "خضار مشكلة", "عدس ماش مطبوخ", "سبانخ بالجبنة", "خضار مشكلة بالأرز", "جزر وبطاطس", "كاري الكادي", "عدس مع أرز"]
+        },
+        meat: {
+            ur: ["چکن کڑاہی", "بیف قورمہ", "بون لیس چکن ہانڈی", "آلو گوشت", "چکن بریانی", "قیمہ مٹر", "مٹن نہاری", "بیف پائے", "چکن جل فریزی", "بیف پلاؤ"],
+            en: ["Chicken Karahi", "Beef Qorma", "Boneless Chicken Handi", "Aloo Gosht", "Chicken Biryani", "Keema Matar", "Mutton Nihari", "Beef Paye", "Chicken Jalfrezi", "Beef Pulao"],
+            ar: ["كاري الدجاج", "قورمة لحم البقر", "دجاج هاندي", "لحم بالبطاطس", "بريانى دجاج", "لحم مفروم بالبزيلاء", "نهاري الملحم", "كوارع بقرى", "دجاج جالفريزي", "بيلو لحم البقر"]
+        },
+        fast: {
+            ur: ["چکن برگر", "آلو کے پراٹھے", "شاورما رول", "نوڈلز / پاستا", "چکن پیزا", "چکن مکرونی", "زنگر برگر", "چکن فرائیڈ رائس", "چنا چاٹ اور دہی بھلے", "سموسہ چاٹ"],
+            en: ["Chicken Burger", "Aloo Paratha", "Shawarma Roll", "Noodles / Pasta", "Chicken Pizza", "Chicken Macaroni", "Zinger Burger", "Chicken Fried Rice", "Chana Chaat & Dahi Bhale", "Samosa Chaat"],
+            ar: ["برجر دجاج", "براتا بالبطاطس", "رول شاورما", "نودلز / باستا", "بيتزا دجاج", "معكرونة بالدجاج", "زنجر برجر", "أرز مقلي بالدجاج", "شانا شات", "سمبوسة شات"]
+        },
+        breakfast: {
+            ur: ["انڈے پراٹھے اور کڑک چائے", "حلوہ پوری اور چنے", "آملیٹ اور سلائس", "نہاری اور روٹی", "چنے بھٹورے"],
+            en: ["Egg Paratha & Karak Chai", "Halwa Puri & Chane", "Omelette & Toast", "Nihari & Roti", "Chana Bhature"],
+            ar: ["باراتا بالبيض والشاي", "حلوى بوري وحمص", "أومليت وتوست", "نهاري وخبز", "حمص بهاتورى"]
+        },
+        sweet: {
+            ur: ["شاهی کھیر", "گرم گلاب جامن", "گاجر کا حلوہ", "لب شیریں", "رس ملائی"],
+            en: ["Shahi Kheer", "Hot Gulab Jamun", "Gajar Ka Halwa", "Lab-e-Shireen", "Ras Malai"],
+            ar: ["أرز باللبن (خير)", "غاب جامون ساخن", "حلوى الجزر", "لب شيرين", "راس مالاي"]
+        }
+    };
+
+    const tips = {
+        ur: ["رائتے اور پودینے کی چٹنی کے ساتھ پیش کریں۔", "ہلکی آنچ پر دم دیں، ذائقہ ڈبل ہو جائے گا۔", "تازہ لیموں نچوڑ کر مزہ لیں۔"],
+        en: ["Serve hot with mint Raita and fresh salad.", "Cook on low flame (Dum) for the best taste.", "Squeeze fresh lemon juice on top for a tangy kick."],
+        ar: ["يقدم ساخناً مع سلطة الطازجة والرايتا.", "اطبخي على نار خفيفة للحصول على أفضل مذاق.", "اعصري الليمون الطازج في الأعلى لمذاق رائع."]
+    };
+
+    function changeLanguage(lang) {
+        currentLang = lang;
+        const str = uiStrings[lang];
+        document.documentElement.dir = str.dir;
+        document.getElementById('app-title').innerText = str.title;
+        document.getElementById('app-subtitle').innerText = str.sub;
+        document.getElementById('opt-all').innerText = str.all;
+        document.getElementById('opt-veg').innerText = str.veg;
+        document.getElementById('opt-meat').innerText = str.meat;
+        document.getElementById('opt-fast').innerText = str.fast;
+        document.getElementById('opt-breakfast').innerText = str.breakfast;
+        document.getElementById('opt-sweet').innerText = str.sweet;
+        document.getElementById('result-title').innerText = str.resTitle;
+        document.getElementById('dish-display').innerText = str.clickBtn;
+        document.getElementById('btn-text').innerText = str.btn;
+        document.getElementById('aff-link').innerText = str.aff;
+        document.getElementById('tip-display').style.display = "none";
+    }
+
+    function playBeep() {
+        const context = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = context.createOscillator();
+        const gainNode = context.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(600, context.currentTime);
+        gainNode.gain.setValueAtTime(0.05, context.currentTime);
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+        oscillator.start();
+        oscillator.stop(context.currentTime + 0.08);
+    }
+
+    function suggestFood() {
+        playBeep();
+        const select = document.getElementById('category-select').value;
+        let selectedDish = "";
+        if (select === "all") {
+            const categories = ["veg", "meat", "fast", "breakfast", "sweet"];
+            const randomCat = categories[Math.floor(Math.random() * categories.length)];
+            const dishes = menuItems[randomCat][currentLang];
+            selectedDish = dishes[Math.floor(Math.random() * dishes.length)];
+        } else {
+            const dishes = menuItems[select][currentLang];
+            selectedDish = dishes[Math.floor(Math.random() * dishes.length)];
+        }
+        document.getElementById('dish-display').innerText = selectedDish;
+        const randomTips = tips[currentLang];
+        const selectedTip = randomTips[Math.floor(Math.random() * randomTips.length)];
+        const tipElement = document.getElementById('tip-display');
+        tipElement.innerText = selectedTip;
+        tipElement.style.display = "inline-block";
+        const box = document.getElementById('res-box');
+        box.style.transform = "scale(1.03)";
+        setTimeout(() => { box.style.transform = "scale(1)"; }, 200);
+    }
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('Service Worker Registered!'))
+            .catch(err => console.log('Service Worker Failed:', err));
+        });
+    }
+</script>
+</body>
+</html>
